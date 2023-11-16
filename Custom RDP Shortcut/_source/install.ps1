@@ -50,9 +50,6 @@ param(
     [switch]$DesktopShortcut,
 
     [Parameter()]
-    [switch]$DesktopFolder,
-
-    [Parameter()]
     [switch]$Log
 
  )
@@ -148,7 +145,7 @@ try {
                 $Shortcut.IconLocation = "$fileDeployFolder\$icoFileName"
             }
             $Shortcut.Save()
-            Write-Host "Created $shortcutName shortcut in StartMenu $startMenuPath folder.."
+            Write-Host "Created $shortcutName.lnk StartMenu shortcut in $startMenuPath"
         }
     }
 
