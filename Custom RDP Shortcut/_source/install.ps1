@@ -31,7 +31,7 @@ Log file (.log) - will write the transcript of the script to C:\Temp\AutoPilot-D
     Import-Module Microsoft.Graph.Identity.DirectoryManagement
 
 .EXAMPLE
-.\ExtendedApDeviceExport.ps1
+.\ExtendedApDeviceExport.ps1 -User 
 .\ExtendedApDeviceExport.ps1 -inputFile 'C:\location\to\inputfile.txt' -outputFile 'C:\location\to\exportfile.csv' -Log
 #>
 
@@ -72,6 +72,7 @@ try {
         Write-Host "User context install switch found. Installing shortcuts in user context."
         #Define User context installation variables
         If ($StartMenuFolder) {
+            Write-Host "Custom StartMenu parameter data found. Using custom deploy- and install-folders."
             #If custom StartMenuFolder parameter was used,
             #Set variable for custom folder to copy files to
             $fileDeployFolder = "$env:APPDATA\$StartMenuFolder"
@@ -79,38 +80,40 @@ try {
             $startMenuPath = "$ENV:USERPROFILE\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\$StartMenuFolder\" 
         }
         else {
+            Write-Host "No Custom StartMenu parameter data found. Using default deploy- and install-folders."
             #If custom StartMenuFolder parameter was  NOT used,
-            #Set variable for default folder to copy files to
+            #Set variable for default Deploy folder
             $fileDeployFolder = "$env:APPDATA\RDP Files\"
-            #Set variable for no StartMenu folder
+            #Set variable for default StartMenu folder
             $startMenuPath = "$ENV:USERPROFILE\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\" 
         }
 
         ###############################################################
         #Prepare folders for installation
         ###############################################################
+        Write-Host "Preparing folders for installation."
         #If deployment folder does not exist, create.
         $checkDeployFolder = Test-Path $fileDeployFolder
         If (!($checkDeployFolder)) {
             New-Item -Path $fileDeployFolder -ItemType Directory -Force | Out-Null
-            Write-Host "$fileDeployFolder did not exist. Created now."
+            Write-Host "Deploy folder $fileDeployFolder did not exist. Created now."
         }
         else {
-            Write-Host "$fileDeployFolder already exists. No creation required."
+            Write-Host "Deploy folder $fileDeployFolder already exists. No creation required."
         }
 
         #If StartMenu folder does not exist, create.
         $checkStartMenuFolder = Test-Path $startMenuPath
         If (!($checkStartMenuFolder)) {
             New-Item -Path $startMenuPath -ItemType Directory -Force | Out-Null
-            Write-Host "$startMenuPath did not exist. Created now."
+            Write-Host "StartMenu folder $startMenuPath did not exist. Created now."
         }
         else {
-            Write-Host "$startMenuPath already exists. No creation required."
+            Write-Host "StartMenu folder $startMenuPath already exists. No creation required."
         }
 
         ###############################################################
-        #Copy required files to %Appdata%\$fileDeployFolder and StartMenu shortcuts to 
+        #Copy required files to $fileDeployFolder and $startMenuPath 
         ###############################################################
         Write-Host "Start copying & installing shortcuts.."
 
