@@ -1,38 +1,24 @@
 ﻿<#
 .DESCRIPTION
- Script connects to MsGraph and then fetches all registered AutoPilot Device info (more than the default export function from within Intune). It then writes it to a .csv file.
-.PARAMETER <inputfile>
-When used, this parameter will allow you to import a .txt file containing pre-selected serial numbers. Should contain the entire path & filename.
-.PARAMETER <outputfile>
-When used, this parameter will allow for changing the default export path & filename. 
+Script removes the StartMenu Shortcuts and local install files that were installed previously via the install.ps1 script.
+.PARAMETER <User>
+When used, will remove files and shortcuts from the user APPDATA folder.
+.PARAMETER <Device>
+When used, will remove files and shortcuts from the device ProgramData folder.
+.PARAMETER <StartMenuFolder>
+When used, will place the shortcuts in a new or existing StartMenu subfolder.
 .PARAMETER <Log>
 Switch that, when added to installation command, will write a log/transcript of the process.
-.INPUTS
-Import pre-selected serial numbers so script will check only these. Should be a .txt file with every serial number on its own line. Use the inputFile parameter to add.
 .OUTPUTS
-Export file (.csv) - default location C:\Temp\AutoPilot-Device-Export-$dateStamp.csv (or custom when outputFile parameter is used)
-Log file (.log) - will write the transcript of the script to C:\Temp\AutoPilot-Device-Export-$dateStamp.log (when Log parameter is used)
+Log file (.log) - will write the transcript of the script to C:\Temp\InstallLogs\RdpShortcut-inst-$dateStamp.log (when Log parameter is used)
 .NOTES
   Version:        1.0
   Author:         bgeijtenbeek
-  Creation Date:  04-Nov-2023
-  Purpose/Change: Regular export from Intune doesn't contain all the information I require such as groupTag, AssignedUser, etc.
-  Prerequisites: Installed powershell modules:
-
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-    Install-Module WindowsAutopilotIntune -MinimumVersion 5.4.0 -Force
-    Install-Module Microsoft.Graph.Groups -Force
-    Install-Module Microsoft.Graph.Authentication -Force
-    Install-Module Microsoft.Graph.Identity.DirectoryManagement -Force
-
-    Import-Module WindowsAutopilotIntune -MinimumVersion 5.4
-    Import-Module Microsoft.Graph.Groups
-    Import-Module Microsoft.Graph.Authentication
-    Import-Module Microsoft.Graph.Identity.DirectoryManagement
-
+  Creation Date:  17-Nov-2023
+  Purpose/Change: (Bulk) add shortcuts to .rdp files in StartMenu
 .EXAMPLE
-.\ExtendedApDeviceExport.ps1 -User 
-.\ExtendedApDeviceExport.ps1 -inputFile 'C:\location\to\inputfile.txt' -outputFile 'C:\location\to\exportfile.csv' -Log
+.\install.ps1 -User 
+.\install.ps1 -Device -StartMenuFolder 'yourFolderName' -Log 
 #>
 
 param(
@@ -45,9 +31,6 @@ param(
 
     [Parameter()]
     [string]$StartMenuFolder,
-
-    [Parameter()]
-    [switch]$DesktopShortcut,
 
     [Parameter()]
     [switch]$Log
