@@ -78,9 +78,9 @@ try {
             Write-Host "Custom StartMenu parameter data found. Using custom deploy- and install-folders."
             #If custom StartMenuFolder parameter was used,
             #Set variable for custom Deploy folder
-            $fileDeployFolder = "$ENV:APPDATA\$StartMenuFolder"
+            $fileDeployFolder = "$ENV:USERPROFILE\AppData\Roaming\$StartMenuFolder"
             #Set variable for custom StartMenu Folder
-            $startMenuPath = "$ENV:APPDATA\Microsoft\Windows\Start Menu\Programs\$StartMenuFolder\" 
+            $startMenuPath = "$ENV:USERPROFILE\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\$StartMenuFolder\" 
         }
         else {
             Write-Host "No Custom StartMenu parameter data found. Using default deploy- and install-folders."

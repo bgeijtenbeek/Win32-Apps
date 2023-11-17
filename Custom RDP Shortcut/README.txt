@@ -1,37 +1,72 @@
-#Gemaakt door: B. Geijtenbeek / Infradax
-#Gemaakt voor: Gemeenschappelijke Regeling Cure / Cure Afvalbeheer
-#Datum: 27-10-2023
-#Ticket/change:
+###################
+Usage info
+###################
 
-Deze package is een bundel: het bevat de installatie van alle AfvalRIS RDP shortcuts (MCS, MCS Test, KCC & KCC Test).
-Bij installatie moet er een parameter -PackageName opgegeven worden. Aan de hand van deze parameter installeert & de-installeert het script de juiste shortcuts, files en registerwaardes.
+Package installs .rdp shortcuts in the StartMenu.
 
-Package bevat:
-- Alle AfvalRIS rdp en ico files (MCS, MCS Test, KCC & KCC Test).
-- Installatiescript (.ps1)
-	- Kopieert ico en rdp naar folder %appdata%\remoteapps
-	- Maakt in StartMenu een AfvalRIS folder aan en voegt een shortcut toe naar de rdp in %appdata%\remoteapps.
-	- Schrijft een regkey weg in HKCU:\Software\AfvalRIS om de app te kunnen detecteren
-- Deinstallatiescript (.ps1)
-	- Haalt de detectieregkey weg uit HKCU:\Software\AfvalRIS
-	- Haalt de StartMenu shortcuts weg
-	- Verwijdert de .ico en .rdp in de %appdata%\remoteapps folder
-	- Wanneer de StartMenu folder (AfvalRIS) en de %appdata%\remoteapps folders geen overige data meer bevatten worden deze ook meteen opgeruimd.
+- Remove the demo content from the "_source\Files" folder.
+- Place your .rdp file(s) in the "_source\Files" folder. Can be one, can be multiple.
+- If you want to use custom icons for you StartMenu shortcuts, place your .ico file(s) in the "_source\Files" folder. Can be one, can be multiple.
+- Make sure the .rdp and .ico file that belong together have the same name, otherwise the script will fail to combine them in the StartMenu shortcuts.
+- Make sure these names are the same as the eventual shortcut name you want to add to the StartMenu.
+- Run the Win32 Content Prep Tool to package the _source folder in to a .intunewin file.
+- Upload the .intunewin to Intune.
 
-INTUNE SETTINGS
-Icon: Meegeleverd in de package folder. (MCS heeft de gele variant, KCC de andere)
-Install context: User
-Install command: %windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -Command ".\install_modular.ps1" -PackageName 'jouwpackagename'
-Uninstall command: %windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -Command ".\uninstall_modular.ps1" -PackageName 'jouwpackagename'
-Voorbeeld command: %windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -Command ".\install_modular.ps1" -PackageName 'AfvalRIS MCS'
+Then think about:
+- installation context -> you want to make it available for all users on the device or only for specific users? Do you want to install the shortcuts in User context or Device context?
+- whether you want to add the StartMenu shortcuts independantly or that you would like to put them in a (new or already existing) folder?
 
-PACKAGENAMES
-Dit variabele is belangrijk want zonder wordt er niets geinstalleerd. De huidige beschikbare packagenames zijn:
-- 'AfvalRIS MCS'
-- 'AfvalRIS MCS Test'
-- 'AfvalRIS KCC'
-- 'AfvalRIS KCC Test'
+When you have the answers, make sure to use the proper parameters to install.
 
-Detection: Kies het juiste detectiescript uit, deze staat in de package folder. Let op: elke versie heeft zijn eigen detectiescript!
-Run script as 32-bit process on 64-bit clients: No
-Enforce script signature check and run script silently: No
+USER/DEVICE CONTEXT
+use the -User or -Device install parameter.
+
+USE STARTMENU SUBFOLDER OR NOT
+when you want the shortcuts to be placed in a subfolder, use the -StartMenuFolder parameter followed by the folder name. 
+This can be a new of already existing subfolder, the script will take care of it. Also, when using the uninstall script the subfolder will be automatically deleted as well, but only when it's empty!
+If you don't want the shortcuts in a subfolder, just don't add the -StartMenuFolder parameter to the installation. 
+
+LOG
+when you would like to write a log of the process add the -Log parameter. Script will log the output to C:\Temp\InstallLogs\ folder.
+
+
+#########################
+Intune commands/settings
+#########################
+
+INSTALLATION
+
+Install commands (User Context Examples, run in User context via Intune):
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\install.ps1" -User
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\install.ps1" -User -StartMenuFolder 'your StartMenu Subfolder' -Log
+
+Uninstall commands (User Context Examples, run in User context via Intune):
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\uninstall.ps1" -User
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\uninstall.ps1" -User -StartMenuFolder 'your StartMenu Subfolder' -Log
+
+Install commands (Device Context Examples, run in System context via Intune):
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\install.ps1" -Device
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\install.ps1" -Device -StartMenuFolder 'your StartMenu Subfolder' -Log
+
+Uninstall commands (Device Context Examples, run in System context via Intune):
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\uninstall.ps1" -Device
+%windir%\SysNative\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -command ".\uninstall.ps1" -Device -StartMenuFolder 'your StartMenu Subfolder' -Log
+
+DETECTION
+
+Look for files that exist. Enter all shortcuts that get placed via this installation (so if you place multiple, add multiple detection lines).
+
+(User context installation):
+File C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\yourshortcut.lnk (if you do not use the Subfolder option)
+File C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\your StartMenu Subfolder\yourshortcut.lnk (if you use the Subfolder option)
+
+(Device context installation):
+File C:\ProgramData\Microsoft\Windows\Start Menu\Programs\yourshortcut.lnk (if you do not use the Subfolder option)
+File C:\ProgramData\Microsoft\Windows\Start Menu\Programs\your StartMenu Subfolder\yourshortcut.lnk (if you use the Subfolder option)
+
+
+###########################
+Template/Example variables
+###########################
+I have made an example .intunewin with the files in the template so you can test its workings. 
+The .intunewin contains the _source folder including the example files in the "_source\Files" folder. 
