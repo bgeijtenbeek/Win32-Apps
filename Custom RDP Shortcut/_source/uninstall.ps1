@@ -1,4 +1,4 @@
-﻿<#
+<#
 .DESCRIPTION
 Script removes the StartMenu Shortcuts and local install files that were installed previously via the install.ps1 script.
 .PARAMETER <User>
@@ -6,16 +6,16 @@ When used, will remove files and shortcuts from the user APPDATA folder.
 .PARAMETER <Device>
 When used, will remove files and shortcuts from the device ProgramData folder.
 .PARAMETER <StartMenuFolder>
-When used, will place the shortcuts in a new or existing StartMenu subfolder.
+When used, will remove the shortcuts from an existing StartMenu subfolder. Will remove the subfolder as well when it's deemed emtpy.
 .PARAMETER <Log>
-Switch that, when added to installation command, will write a log/transcript of the process.
+Switch that, when added to uninstallation command, will write a log/transcript of the process.
 .OUTPUTS
-Log file (.log) - will write the transcript of the script to C:\Temp\InstallLogs\RdpShortcut-inst-$dateStamp.log (when Log parameter is used)
+Log file (.log) - will write the transcript of the script to C:\Temp\InstallLogs\RdpShortcut-uninst-$dateStamp.log (when Log parameter is used)
 .NOTES
   Version:        1.0
   Author:         bgeijtenbeek
   Creation Date:  17-Nov-2023
-  Purpose/Change: (Bulk) add shortcuts to .rdp files in StartMenu
+  Purpose/Change: (Bulk) remove .rdp shortcuts from StartMenu that were previously install via the install.ps1 variant of this script.
 .EXAMPLE
 .\install.ps1 -User 
 .\install.ps1 -Device -StartMenuFolder 'yourFolderName' -Log 
