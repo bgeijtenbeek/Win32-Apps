@@ -1,6 +1,6 @@
 <#
 .DESCRIPTION
- cript copies .rdp and .ico files to local folder and then places shortcut to them in the StartMenu.
+Script copies .rdp and .ico files to local folder and then places shortcut to them in the StartMenu.
 .PARAMETER <User>
 When used, will place files and shortcuts in the user APPDATA folder.
 .PARAMETER <Device>
