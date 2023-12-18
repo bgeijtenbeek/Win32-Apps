@@ -23,7 +23,7 @@ use the -User or -Device install parameter.
 
 USE STARTMENU SUBFOLDER OR NOT
 when you want the shortcuts to be placed in a subfolder, use the -StartMenuFolder parameter followed by the folder name. 
-This can be a new of already existing subfolder, the script will take care of it. Also, when using the uninstall script the subfolder will be automatically deleted as well, but only when it's empty!
+This can be a new or already existing subfolder, the script will take care of it. Also, when using the uninstall script the subfolder will be automatically deleted as well, but only when it's empty!
 If you don't want the shortcuts in a subfolder, just don't add the -StartMenuFolder parameter to the installation. 
 
 LOG
